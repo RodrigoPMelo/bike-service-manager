@@ -1,4 +1,0 @@
-INDEX VERSION 1.134+C:\Users\rodri\Documents\Pós_arquitetura_Software\5-Java\bike-service-manager\.metadata\.plugins\org.eclipse.jdt.core
-1887909119.index
-914415128.index
-1865797976.index
