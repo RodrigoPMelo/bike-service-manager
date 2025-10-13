@@ -3,8 +3,11 @@ package br.edu.infnet.rodrigomeloapi.api.controller;
 import br.edu.infnet.rodrigomeloapi.application.service.ClientService;
 import br.edu.infnet.rodrigomeloapi.domain.model.Client;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -14,44 +17,50 @@ public class ClientController {
 
     private final ClientService service;
 
-    // --- READ ---
+    // READ
     @GetMapping
-    public List<Client> listAll() {
-        return service.findAll();
-    }
+    public ResponseEntity<List<Client>> listAll() { return ResponseEntity.ok(service.findAll()); }
 
     @GetMapping("/{id}")
-    public Client getById(@PathVariable Long id) {
-        return service.findById(id).orElse(null);
+    public ResponseEntity<Client> getById(@PathVariable Long id) {
+        return service.findById(id).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/by-cpf/{cpf}")
-    public Client getByCpf(@PathVariable String cpf) {
-        return service.findByCpf(cpf).orElse(null);
+    public ResponseEntity<Client> getByCpf(@PathVariable String cpf) {
+        return service.findByCpf(cpf).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @GetMapping("/search")
-    public List<Client> searchByName(@RequestParam String name) {
-        return service.searchByName(name);
+    public ResponseEntity<List<Client>> searchByName(@RequestParam String name) {
+        return ResponseEntity.ok(service.searchByName(name));
     }
 
-    // --- CREATE ---
+    // CREATE
     @PostMapping
-    public Client create(@RequestBody Client body) {
+    public ResponseEntity<Client> create(@RequestBody Client body) {
         body.setId(null);
-        return service.save(body);
+        Client created = service.save(body);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}").buildAndExpand(created.getId()).toUri();
+        return ResponseEntity.created(location).body(created); // 201
     }
 
-    // --- UPDATE (full) ---
+    // UPDATE
     @PutMapping("/{id}")
-    public Client update(@PathVariable Long id, @RequestBody Client body) {
+    public ResponseEntity<Client> update(@PathVariable Long id, @RequestBody Client body) {
+        var existing = service.findById(id);
+        if (existing.isEmpty()) return ResponseEntity.notFound().build();
         body.setId(id);
-        return service.save(body);
+        return ResponseEntity.ok(service.save(body)); // 200
     }
 
-    // --- DELETE ---
+    // DELETE
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        var existing = service.findById(id);
+        if (existing.isEmpty()) return ResponseEntity.notFound().build();
         service.delete(id);
+        return ResponseEntity.noContent().build(); // 204
     }
 }
