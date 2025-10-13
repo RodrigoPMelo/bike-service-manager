@@ -1,0 +1,4 @@
+model,brand,year,serialNumber,type
+Rockhopper,Specialized,2022,ABC123,mountain
+Domane,Trek,2021,XYZ987,road
+Urban 700,Caloi,2020,BR12345,urban
