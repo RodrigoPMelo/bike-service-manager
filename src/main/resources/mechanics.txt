@@ -1,0 +1,4 @@
+name,email,cpf,phone,employeeNumber,specialty,salary,active
+Diego Ramos,diego@example.com,12312312312,11955557777,MEC-100,suspension,4200.00,true
+Elaine Prado,elaine@example.com,32132132132,11944448888,MEC-101,drivetrain,4800.50,true
+Fábio Nunes,fabio@example.com,21212121212,11933336666,MEC-102,brakes,3900.00,false

@@ -1,0 +1,5 @@
+name,email,cpf,phone,loyaltyCode,signupAt,zip,street,number,complement,neighborhood,city,state
+Ana Silva,ana@example.com,11122233344,11999990000,LOYAL-001,,
+01001-000,Rua da Consolação,123,,Consolação,São Paulo,SP
+Bruno Costa,bruno@example.com,55566677788,21988887777,LOYAL-002,,22290-240,Avenida Atlântica,500,apto 302,Copacabana,Rio de Janeiro,RJ
+Carla Lima,carla@example.com,99900011122,11911112222,,2024-12-01T10:15:00,30110-028,Rua do Ouro,45,,Funcionários,Belo Horizonte,MG
