@@ -67,7 +67,7 @@ public class BikeLoader implements ApplicationRunner {
                     Bike bike = Bike.builder()
                             .model(model)
                             .brand(brand)
-                            .year(year)
+                            .manufactureYear(year)
                             .serialNumber(serial)
                             .type(type)
                             .build();
