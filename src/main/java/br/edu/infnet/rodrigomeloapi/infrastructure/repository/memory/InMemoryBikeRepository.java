@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
+@org.springframework.context.annotation.Profile("mem")
 public class InMemoryBikeRepository implements BikeRepositoryPort {
 
     private final Map<Long, Bike> store = new ConcurrentHashMap<>();
@@ -49,7 +50,7 @@ public class InMemoryBikeRepository implements BikeRepositoryPort {
                 .id(b.getId())
                 .model(b.getModel())
                 .brand(b.getBrand())
-                .year(b.getYear())
+                .manufactureYear(b.getManufactureYear())
                 .serialNumber(b.getSerialNumber())
                 .type(b.getType())
                 .build();

@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Repository
+@org.springframework.context.annotation.Profile("mem")
 public class InMemoryClientRepository implements ClientRepositoryPort {
 
     private final Map<Long, Client> store = new ConcurrentHashMap<>();
