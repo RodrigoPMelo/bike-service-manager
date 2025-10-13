@@ -1,19 +1,28 @@
 package br.edu.infnet.rodrigomeloapi.domain.model;
 
+import jakarta.persistence.*;
 import lombok.*;
+
 import java.time.LocalDateTime;
 
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true)
+@EqualsAndHashCode(of = "id", callSuper = false)
+@Entity
+@Table(name = "clients")
 public class Client extends Person {
-    private Long id;                
-    private String loyaltyCode;
-    private Address address;         // association 1-1
-    private LocalDateTime signupAt; 
 
-    public Client(String name, String email, String cpf, String phone) {
-        super(name, email, cpf, phone);
-    }
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(length = 40)
+    private String loyaltyCode;
+
+    @Embedded
+    private Address address;
+
+    private LocalDateTime signupAt;
 }
