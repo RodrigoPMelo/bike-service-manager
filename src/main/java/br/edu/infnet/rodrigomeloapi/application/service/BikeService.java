@@ -2,6 +2,7 @@ package br.edu.infnet.rodrigomeloapi.application.service;
 
 import br.edu.infnet.rodrigomeloapi.application.shared.CrudService;
 import br.edu.infnet.rodrigomeloapi.domain.model.Bike;
+import br.edu.infnet.rodrigomeloapi.domain.model.Client;
 import br.edu.infnet.rodrigomeloapi.domain.repository.BikeRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,4 +39,19 @@ public class BikeService implements CrudService<Bike, Long> {
     public void delete(Long id) {
         repository.deleteById(id);
     }
+    
+    public List<Bike> findByOwner(Long ownerId) {
+        return repository.findByOwnerId(ownerId);
+    }
+    public List<Bike> findByType(String type) {
+        return repository.findByTypeIgnoreCase(type);
+    }
+
+    public Optional<Bike> assignOwner(Long bikeId, Client owner) {
+        return repository.findById(bikeId).map(b -> {
+            b.setOwner(owner);
+            return repository.save(b);
+        });
+    }
+
 }

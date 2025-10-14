@@ -2,6 +2,7 @@ package br.edu.infnet.rodrigomeloapi.api.controller;
 
 import br.edu.infnet.rodrigomeloapi.application.service.MechanicService;
 import br.edu.infnet.rodrigomeloapi.domain.model.Mechanic;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,7 @@ public class MechanicController {
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Mechanic> create(@RequestBody Mechanic body) {
+    public ResponseEntity<Mechanic> create(@Valid @RequestBody Mechanic body) {
         body.setId(null);
         Mechanic created = service.save(body);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -48,7 +49,7 @@ public class MechanicController {
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<Mechanic> update(@PathVariable Long id, @RequestBody Mechanic body) {
+    public ResponseEntity<Mechanic> update(@PathVariable Long id,@Valid @RequestBody Mechanic body) {
         var existing = service.findById(id);
         if (existing.isEmpty()) return ResponseEntity.notFound().build();
         body.setId(id);

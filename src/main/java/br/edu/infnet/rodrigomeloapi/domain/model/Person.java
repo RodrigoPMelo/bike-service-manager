@@ -1,7 +1,7 @@
 package br.edu.infnet.rodrigomeloapi.domain.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter @Setter
@@ -11,15 +11,17 @@ import lombok.*;
 @ToString
 public abstract class Person {
 
-    @Column(nullable = false, length = 120)
-    private String name;
+	@NotBlank
+	@Size(max = 120)
+	private String name;
 
-    @Column(length = 180)
-    private String email;
+	@Email
+	@Size(max = 180)
+	private String email;
 
-    @Column(length = 14)
-    private String cpf;
+	@Pattern(regexp = "\\d{11}", message = "cpf must have 11 digits")
+	private String cpf;
 
-    @Column(length = 20)
-    private String phone;
+	@Size(max = 20)
+	private String phone;
 }

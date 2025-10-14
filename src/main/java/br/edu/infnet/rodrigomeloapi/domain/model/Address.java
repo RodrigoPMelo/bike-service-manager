@@ -1,7 +1,7 @@
 package br.edu.infnet.rodrigomeloapi.domain.model;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Getter @Setter
@@ -12,24 +12,11 @@ import lombok.*;
 @ToString
 public class Address {
 
-    @Column(length = 20)
-    private String zipCode;
-
-    @Column(length = 120)
-    private String street;
-
-    @Column(length = 20)
-    private String number;
-
-    @Column(length = 60)
-    private String complement;
-
-    @Column(length = 80)
-    private String neighborhood;
-
-    @Column(length = 80)
-    private String city;
-
-    @Column(length = 2)
-    private String state;
+	@Size(max = 20) private String zipCode;
+	@Size(max = 120) private String street;
+	@Size(max = 20) private String number;
+	@Size(max = 60) private String complement;
+	@Size(max = 80) private String neighborhood;
+	@Size(max = 80) private String city;
+	@Size(max = 2)  private String state;
 }

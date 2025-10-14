@@ -1,6 +1,7 @@
 package br.edu.infnet.rodrigomeloapi.domain.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter @Setter
@@ -16,12 +17,13 @@ public class Mechanic extends Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 40)
+    @Size(max = 40)
     private String employeeNumber;
 
-    @Column(length = 80)
+    @Size(max = 80)
     private String specialty;
 
+    @PositiveOrZero
     private double salary;
 
     private boolean active;
