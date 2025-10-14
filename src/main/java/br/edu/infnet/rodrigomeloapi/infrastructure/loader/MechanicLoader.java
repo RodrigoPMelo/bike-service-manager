@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 
 @Slf4j
 @Component
+@Order(20)
 @RequiredArgsConstructor
 public class MechanicLoader implements ApplicationRunner {
 

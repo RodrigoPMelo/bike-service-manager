@@ -1,0 +1,5 @@
+cpf,model,brand,manufactureYear,serialNumber,type
+11122233344,Domane,Trek,2021,TRK-001,road
+11122233344,CheckPoint,Trek,2020,TRK-002,gravel
+55566677788,Rockhopper,Specialized,2022,SPZ-010,mountain
+99900011122,Urban 700,Caloi,2020,CAL-700,urban
