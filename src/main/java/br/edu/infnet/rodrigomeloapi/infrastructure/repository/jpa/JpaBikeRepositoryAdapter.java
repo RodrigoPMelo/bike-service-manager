@@ -37,4 +37,13 @@ public class JpaBikeRepositoryAdapter implements BikeRepositoryPort {
     public void deleteById(Long id) {
         repo.deleteById(id);
     }
+    
+    @Override
+    public List<Bike> findByOwnerId(Long ownerId) {
+        return repo.findByOwner_Id(ownerId);
+    }
+    @Override
+    public List<Bike> findByTypeIgnoreCase(String type) {
+        return repo.findByTypeIgnoreCase(type);
+    }
 }

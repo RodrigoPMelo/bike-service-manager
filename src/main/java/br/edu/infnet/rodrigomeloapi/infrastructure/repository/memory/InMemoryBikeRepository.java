@@ -55,4 +55,24 @@ public class InMemoryBikeRepository implements BikeRepositoryPort {
                 .type(b.getType())
                 .build();
     }
+    
+    @Override
+    public List<Bike> findByOwnerId(Long ownerId) {
+        if (ownerId == null) return List.of();
+        return store.values().stream()
+            .filter(b -> b.getOwner() != null && ownerId.equals(b.getOwner().getId()))
+            .sorted(Comparator.comparing(Bike::getId))
+            .toList();
+    }
+
+    @Override
+    public List<Bike> findByTypeIgnoreCase(String type) {
+        if (type == null) return List.of();
+        String t = type.toLowerCase();
+        return store.values().stream()
+            .filter(b -> b.getType() != null && b.getType().toLowerCase().equals(t))
+            .sorted(Comparator.comparing(Bike::getId))
+            .toList();
+    }
+
 }

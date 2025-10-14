@@ -9,4 +9,7 @@ public interface BikeRepositoryPort {
     Optional<Bike> findById(Long id);
     List<Bike> findAll();
     void deleteById(Long id);
+    
+    List<Bike> findByOwnerId(Long ownerId);
+    List<Bike> findByTypeIgnoreCase(String type);
 }
