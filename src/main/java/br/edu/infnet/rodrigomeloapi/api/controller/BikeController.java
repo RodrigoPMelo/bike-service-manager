@@ -1,7 +1,10 @@
 package br.edu.infnet.rodrigomeloapi.api.controller;
 
 import br.edu.infnet.rodrigomeloapi.application.service.BikeService;
+import br.edu.infnet.rodrigomeloapi.application.service.ClientService;
 import br.edu.infnet.rodrigomeloapi.domain.model.Bike;
+import br.edu.infnet.rodrigomeloapi.domain.model.Client;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +19,8 @@ import java.util.List;
 public class BikeController {
 
     private final BikeService service;
-
+    private final ClientService clientService;
+    
     @GetMapping
     public ResponseEntity<List<Bike>> listAll() {
         return ResponseEntity.ok(service.findAll());
@@ -28,18 +32,40 @@ public class BikeController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+    
+    @GetMapping("/search")
+    public ResponseEntity<List<Bike>> searchByType(@RequestParam String type) {
+        return ResponseEntity.ok(service.findByType(type));
+    }
 
     @PostMapping
-    public ResponseEntity<Bike> create(@RequestBody Bike body) {
+    public ResponseEntity<Bike> create(@Valid @RequestBody Bike body) {
         body.setId(null);
         Bike created = service.save(body);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(location).body(created); // 201 + Location
     }
+    
+    @PostMapping("/owner/{ownerId}")
+    public ResponseEntity<Bike> createForOwner(@PathVariable Long ownerId, @Valid @RequestBody Bike body) {
+        var ownerOpt = clientService.findById(ownerId);
+        if (ownerOpt.isEmpty()) return ResponseEntity.notFound().build();
+
+        body.setId(null);
+
+        var owner = new Client();
+        owner.setId(ownerId);
+        body.setOwner(owner);
+
+        Bike created = service.save(body);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/../{id}").buildAndExpand(created.getId()).normalize().toUri();
+        return ResponseEntity.created(location).body(created);
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Bike> update(@PathVariable Long id, @RequestBody Bike body) {
+    public ResponseEntity<Bike> update(@PathVariable Long id, @Valid @RequestBody Bike body) {
         var existing = service.findById(id);
         if (existing.isEmpty()) return ResponseEntity.notFound().build(); // 404
         body.setId(id);

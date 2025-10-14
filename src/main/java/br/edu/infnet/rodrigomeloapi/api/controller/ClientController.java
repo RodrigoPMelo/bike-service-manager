@@ -1,7 +1,10 @@
 package br.edu.infnet.rodrigomeloapi.api.controller;
 
+import br.edu.infnet.rodrigomeloapi.application.service.BikeService;
 import br.edu.infnet.rodrigomeloapi.application.service.ClientService;
+import br.edu.infnet.rodrigomeloapi.domain.model.Bike;
 import br.edu.infnet.rodrigomeloapi.domain.model.Client;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +19,7 @@ import java.util.List;
 public class ClientController {
 
     private final ClientService service;
+    private final BikeService bikeService; 
 
     // READ
     @GetMapping
@@ -35,10 +39,16 @@ public class ClientController {
     public ResponseEntity<List<Client>> searchByName(@RequestParam String name) {
         return ResponseEntity.ok(service.searchByName(name));
     }
+    @GetMapping("/{id}/bikes")
+    public ResponseEntity<List<Bike>> listBikesOfClient(@PathVariable Long id) {
+        var exists = service.findById(id).isPresent();
+        if (!exists) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(bikeService.findByOwner(id));
+    }
 
     // CREATE
     @PostMapping
-    public ResponseEntity<Client> create(@RequestBody Client body) {
+    public ResponseEntity<Client> create(@Valid @RequestBody Client body) {
         body.setId(null);
         Client created = service.save(body);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -48,7 +58,7 @@ public class ClientController {
 
     // UPDATE
     @PutMapping("/{id}")
-    public ResponseEntity<Client> update(@PathVariable Long id, @RequestBody Client body) {
+    public ResponseEntity<Client> update(@PathVariable Long id, @Valid @RequestBody Client body) {
         var existing = service.findById(id);
         if (existing.isEmpty()) return ResponseEntity.notFound().build();
         body.setId(id);
@@ -63,4 +73,5 @@ public class ClientController {
         service.delete(id);
         return ResponseEntity.noContent().build(); // 204
     }
+    
 }
