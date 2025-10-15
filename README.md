@@ -1,158 +1,86 @@
 # 🚲 Sistema de Gestão de Oficinas de Bicicletas
 
-Repositório do projeto desenvolvido para a disciplina de **Arquitetura Java** (Pós-graduação).  
-O sistema tem como objetivo gerenciar uma **oficina de bicicletas**, permitindo o cadastro de bicicletas, clientes, mecânicos e ordens de serviço, com validações, persistência em banco de dados e API REST construída com Spring Boot.
+Repositório do projeto final desenvolvido para a disciplina de Arquitetura Java. O sistema é uma API REST para gerenciar uma oficina de bicicletas, permitindo o cadastro de bicicletas, clientes e mecânicos.
 
 ---
 
-## 🧭 Visão Geral
+## ✨ Funcionalidades Principais
 
-**Tecnologias principais:**
-
-- Java 17+
-- Spring Boot (Web, Data JPA, Validation)
-- Lombok
-- Banco de Dados H2
-- Maven
-
-**Arquitetura:** em camadas (Controller → Service → Repository → Model + Loader)
-
-**Banco de Dados:** H2 (em memória)
+* **Gestão de Clientes:** CRUD completo para clientes, incluindo busca por nome e CPF.
+* **Gestão de Mecânicos:** CRUD completo para mecânicos, com busca por especialidade e status (ativo/inativo).
+* **Gestão de Bicicletas:** CRUD completo para bicicletas, com possibilidade de associação a um cliente proprietário.
+* **Carga Inicial de Dados:** O sistema é populado com dados iniciais a partir de arquivos `.txt` na inicialização.
+* **Documentação Interativa:** A API é totalmente documentada e testável via Swagger UI.
 
 ---
 
-## 🧱 Estrutura do Projeto
-```
-src/  
-└── main/  
-       └── java/com/oficinabike/  
-         ├── model/        # Entidades do domínio  
-         ├── controller/   # Endpoints REST  
-         ├── service/      # Regras de negócio  
-         ├── repository/   # Interfaces JPA  
-         ├── loader/       # Carga inicial de dados  
-         └── exception/    # Tratamento de erros e validações  
-```
----
+## 🛠️ Tecnologias Utilizadas
 
-## 🗓️ Planejamento de Desenvolvimento
-
-### **📍 Semana 1 — Feature 1: Configuração e Entidade Primária**
-
-**Objetivo:** configurar o projeto e implementar a entidade base `Bicicleta`.
-
-**Tarefas:**
-
-- Criar projeto Spring Boot com dependência *Spring Web*.
-- Implementar entidade `Bicicleta` (`id`, `modelo`, `marca`, `ano`, `numeroSerie`, `tipo`).
-- Criar `CrudService<T, ID>` e `BicicletaService` com `ConcurrentHashMap`.
-- Implementar `BicicletaLoader` para ler `bicicletas.txt`.
-- Criar `BicicletaController` expondo `/bicicletas`.
-- Testar endpoints via Postman.
-
-**Entrega:** Projeto funcional em memória.  
-**Commit:** `feature1-in-memory-setup`
+* **Linguagem:** Java 17
+* **Framework:** Spring Boot 3.2.5
+* **Acesso a Dados:** Spring Data JPA com Hibernate
+* **Banco de Dados:** H2 (em memória, persistido em arquivo)
+* **Validações:** Bean Validation
+* **Documentação:** SpringDoc (Swagger UI)
+* **Build:** Maven
 
 ---
 
-### **🧩 Semana 2 — Feature 2: Expansão do Domínio e CRUD Completo**
+## 🚀 Como Executar o Projeto
 
-**Objetivo:** adicionar herança, associação e CRUDs completos.
+### Pré-requisitos
 
-**Tarefas:**
+* Java 17 (ou superior)
+* Apache Maven 3.8 (ou superior)
 
-- Criar classe abstrata `Pessoa` (nome, cpf, email, telefone).
-- Subclasses:
-  - `Cliente`: fidelidade, endereco, dataCadastro.
-  - `Mecanico`: matricula, especialidade, salario, ehAtivo.
-- Classe associada: `Endereco` (OneToOne com Cliente).
-- Criar Services e Loaders (`ClienteService`, `MecanicoService`).
-- Implementar Controllers `/clientes` e `/mecanicos`.
-- Criar exceções customizadas (`ClienteNaoEncontradoException`, `MecanicoInvalidoException`).
+### Passos
 
-**Entrega:** CRUD completo em memória com herança e associação.  
-**Commit:** `feature2-domain-expansion`
+1.  **Clone o repositório:**  
+    ```bash
+    git clone https://github.com/RodrigoPMelo/bike-service-manager.git  
+    cd bike-service-manager
+    ```
 
----
+2.  **Execute a aplicação com Maven:**  
 
-### **🗄️ Semana 3 — Feature 3: Persistência Real e API Refinada**
+    ```bash
+    mvn spring-boot:run
+    ```
+    A API estará rodando e pronta para receber requisições.
 
-**Objetivo:** substituir armazenamento em memória por banco relacional (H2 + JPA).
-
-**Tarefas:**
-
-- Adicionar dependências: `spring-boot-starter-data-jpa`, `h2`, `lombok`.
-- Configurar `application.properties`:
-
-  ```properties
-  spring.datasource.url=jdbc:h2:mem:oficinadb
-  spring.jpa.hibernate.ddl-auto=update
-  spring.h2.console.enabled=true
-  ```
-
-- Anotar entidades com `@Entity`.
-- Criar repositórios (`BicicletaRepository`, `ClienteRepository`, etc.).
-- Atualizar Services para usar `JpaRepository`.
-- Refatorar Controllers para usar `ResponseEntity`.
-- Implementar status HTTP adequados (`200`, `201`, `204`, `404`, `400`, `409`).
-
-**Entrega:** API persistente com comunicação semântica via HTTP.  
-**Commit:** `feature3-persistence-jpa`
+3.  **Acesse os principais endpoints:**
+    * **API Base URL:** `http://localhost:8080`
+    * **Swagger UI (Documentação Interativa):** `http://localhost:8080/swagger-ui.html`
+    * **Console do Banco H2:** `http://localhost:8080/h2-console`
+        * **JDBC URL (para login):** `jdbc:h2:file:./data/bikemanagerdb`
+        * **User Name:** `sa`
+        * **Password:** (deixe em branco)
 
 ---
 
-### **🧮 Semana 4 — Feature 4: Validação, Exceções Globais e Relacionamentos Complexos**
+## 🗺️ Estrutura da API (Endpoints)
 
-**Objetivo:** implementar validações avançadas, tratamento global e novo relacionamento OneToMany.
+### Client Controller (`/clients`)
+* `GET /clients`: Lista todos os clientes.
+* `GET /clients/{id}`: Busca um cliente por ID.
+* `GET /clients/by-cpf/{cpf}`: Busca um cliente por CPF.
+* `GET /clients/{id}/bikes`: Lista as bicicletas de um cliente específico.
+* `POST /clients`: Cria um novo cliente.
+* `PUT /clients/{id}`: Atualiza um cliente existente.
+* `DELETE /clients/{id}`: Exclui um cliente.
 
-**Tarefas:**
+### Mechanic Controller (`/mechanics`)
+* `GET /mechanics`: Lista todos os mecânicos.
+* `GET /mechanics/{id}`: Busca um mecânico por ID.
+* `GET /mechanics/active`: Filtra mecânicos por status (ativo/inativo).
+* `POST /mechanics`: Cria um novo mecânico.
+* `PUT /mechanics/{id}`: Atualiza um mecânico existente.
+* `PATCH /mechanics/{id}/inactivate`: Inativa um mecânico.
+* `DELETE /mechanics/{id}`: Exclui um mecânico.
 
-- Criar entidades:
-  - `OrdemServico`: id, dataEntrada, dataSaida, descricaoProblema, valorTotal, cliente, mecanico.
-  - `PecaUtilizada`: id, descricao, valor, quantidade, ordemServico.
-- Mapear `OneToMany` e `ManyToOne` entre Ordem e Peça.
-- Adicionar Bean Validations:
-  - `@NotBlank`, `@Min`, `@Email`, `@Future`, `@Pattern`.
-- Criar `GlobalExceptionHandler` com `@ControllerAdvice`.
-- Implementar Query Methods:
-  - `findByClienteNomeContainingIgnoreCase`
-  - `findByMecanicoEspecialidadeStartingWithIgnoreCase`
-- Criar `Loader` de ordens (`ordens.txt`).
-
-**Entrega:** API validada, com tratamento global e relacionamento complexo.  
-**Commit:** `feature4-validation-relationship`
-
----
-
-## 🧾 Entrega Final
-
-**Arquivos obrigatórios:**
-
-- Repositório público no GitHub (`oficina-bikes-api`)
-- PDF de documentação com:
-  - Dados da instituição, curso, disciplina e aluno.
-  - Resumo do projeto e instruções de execução.
-  - Link do repositório.
-  - Prints de endpoints funcionando.
-
-**README.md:**  
-
-- Descrição do sistema  
-- Tecnologias usadas  
-- Passos para execução  
-- Estrutura de entidades e endpoints principais  
-
----
-
-## 💡 Observações
-
-- Faça commits semanais organizados (`featureX-...`)  
-- Utilize o Postman para validar cada etapa.  
-- O projeto deve iniciar sem erros e ser acessível via navegador ou `http://localhost:8080/h2-console`.
-
----
-
-**Autor:** Rodrigo Pompermayer de Melo  
-**Curso:** Pós-graduação em Arquitetura de Software com Java  
-**Disciplina:** Desenvolvimento Java com Spring Boot  
-**Professor:** *Eliberth Moraes*
+### Bike Controller (`/bikes`)
+* `GET /bikes`: Lista todas as bicicletas.
+* `GET /bikes/{id}`: Busca uma bicicleta por ID.
+* `POST /bikes`: Cria uma nova bicicleta.
+* `PUT /bikes/{id}`: Atualiza uma bicicleta existente.
+* `DELETE /bikes/{id}`: Exclui uma bicicleta.
