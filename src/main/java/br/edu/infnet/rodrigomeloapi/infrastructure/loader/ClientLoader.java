@@ -59,6 +59,10 @@ public class ClientLoader implements ApplicationRunner {
                     String name = p[0].trim();
                     String email = p[1].trim();
                     String cpf = p[2].trim();
+                    if (clientService.findByCpf(cpf).isPresent()) {
+                        skipped++;
+                        continue; 
+                    }
                     String phone = p[3].trim();
                     String loyalty = p[4].trim();
                     String signupAtRaw = p[5].trim();

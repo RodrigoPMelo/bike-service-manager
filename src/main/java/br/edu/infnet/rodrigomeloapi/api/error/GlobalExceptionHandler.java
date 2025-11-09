@@ -2,6 +2,7 @@ package br.edu.infnet.rodrigomeloapi.api.error;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.NoSuchElementException;
 
 import static br.edu.infnet.rodrigomeloapi.api.error.ApiError.FieldErrorItem;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -29,42 +31,43 @@ public class GlobalExceptionHandler {
                 .toList();
         var body = new ApiError(HttpStatus.BAD_REQUEST.value(), "Bad Request",
                 "Validation failed", req.getRequestURI(), fields);
+        log.warn("Validation error on {} {}: {}", req.getMethod(), req.getRequestURI(), fields);
         return ResponseEntity.badRequest().body(body);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiError> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest req) {
-        List<FieldErrorItem> fields = ex.getConstraintViolations().stream()
-                .map(v -> new FieldErrorItem(v.getPropertyPath().toString(), v.getMessage()))
-                .toList();
-        var body = new ApiError(HttpStatus.BAD_REQUEST.value(), "Bad Request",
-                "Constraint violation", req.getRequestURI(), fields);
-        return ResponseEntity.badRequest().body(body);
+        log.warn("Constraint violation on {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return build(HttpStatus.BAD_REQUEST, "Constraint violation: " + ex.getMessage(), req);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ApiError> handleBadJson(HttpMessageNotReadableException ex, HttpServletRequest req) {
-        String msg = ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage();
-        return build(HttpStatus.BAD_REQUEST, "Malformed JSON: " + msg, req);
+    public ResponseEntity<ApiError> handleNotReadable(HttpMessageNotReadableException ex, HttpServletRequest req) {
+        log.warn("Unreadable request body on {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return build(HttpStatus.BAD_REQUEST, "Invalid JSON or data format", req);
     }
 
-    @ExceptionHandler({ NoSuchElementException.class })
+    @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<ApiError> handleNotFound(NoSuchElementException ex, HttpServletRequest req) {
-        return build(HttpStatus.NOT_FOUND, ex.getMessage() != null ? ex.getMessage() : "Resource not found", req);
+        log.warn("Entity not found on {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), req);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleConflict(DataIntegrityViolationException ex, HttpServletRequest req) {
+        log.error("Data integrity violation on {} {}", req.getMethod(), req.getRequestURI(), ex);
         return build(HttpStatus.CONFLICT, "Data integrity violation", req);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiError> handleBadRequest(IllegalArgumentException ex, HttpServletRequest req) {
+        log.warn("Bad request on {} {}: {}", req.getMethod(), req.getRequestURI(), ex.getMessage());
         return build(HttpStatus.BAD_REQUEST, ex.getMessage(), req);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError> handleGeneric(Exception ex, HttpServletRequest req) {
+        log.error("Unexpected error on {} {}", req.getMethod(), req.getRequestURI(), ex);
         return build(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected error", req);
     }
 }

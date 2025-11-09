@@ -1,0 +1,4 @@
+# clientCpf,mechanicId,entryDate,estimatedExitDate,problemDescription,totalValue,[part_desc,part_val,part_qty]...
+11122233344,1,2025-10-20T09:00:00,2025-10-21T17:00:00,Full revision and brake pad replacement,320.00,Shimano Brake Pad,120.00,2
+55566677788,2,2025-10-21T10:30:00,2025-10-21T15:00:00,Drivetrain adjustment,80.00
+99900011122,1,2025-10-22T14:00:00,2025-10-24T12:00:00,Flat tire and rusty chain,185.50,Air Chamber,35.50,1,KMC Chain,150.00,1

@@ -1,5 +1,10 @@
 package br.edu.infnet.rodrigomeloapi.domain.model;
 
+import java.util.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -7,10 +12,11 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = {"serviceOrders"})
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
 @Table(name = "mechanics")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Mechanic extends Person {
 
     @Id
@@ -27,4 +33,8 @@ public class Mechanic extends Person {
     private double salary;
 
     private boolean active;
+    
+    @OneToMany(mappedBy = "mechanic") 
+    @JsonIgnore // Avoids heavy serialization
+    private List<ServiceOrder> serviceOrders = new ArrayList<>();
 }
